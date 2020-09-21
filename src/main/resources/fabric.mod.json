@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "simplex-data-api",
+  "version": "${version}",
+  "name": "Simplex Data API",
+  "description": "A data driven content registry api",
+  "authors": [
+    "Simplex Development"
+  ],
+  "contributors": [],
+  "contact": {
+    "homepage": "https://github.com/Simplex-Dev/simplex-data-api",
+    "sources": "https://github.com/Simplex-Dev/simplex-data-api"
+  },
+  "license": "Apache-2.0",
+  "icon": "assets/simplex-data-api/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.simplex_dev.serialization.Main"
+    ],
+    "client": [],
+    "server": []
+  },
+  "mixins": [
+    "simplex-data-api.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  }
+}
