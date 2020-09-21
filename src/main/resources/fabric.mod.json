@@ -17,7 +17,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.simplex_dev.serialization.Main"
+      "io.github.simplex.serialization.Main"
     ],
     "client": [],
     "server": []

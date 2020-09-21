@@ -1,8 +1,7 @@
-package io.github.simplex_dev.serialization;
+package io.github.simplex.serialization;
 
 import net.fabricmc.api.ModInitializer;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,12 +14,6 @@ public class Main implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        log(Level.INFO, "Initializing");
         //TODO: Initializer
     }
-
-    public static void log(Level level, String message){
-        LOGGER.log(level, "["+MOD_NAME+"] " + message);
-    }
-
 }

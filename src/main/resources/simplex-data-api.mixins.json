@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "io.github.simplex_dev.serialization.mixin",
+  "package": "io.github.simplex.serialization.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [],
   "client": [],
