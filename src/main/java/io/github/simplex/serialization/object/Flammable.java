@@ -3,6 +3,7 @@ package io.github.simplex.serialization.object;
 import java.util.List;
 
 import io.github.simplex.serialization.util.IdentifiableCodecs;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -23,6 +24,10 @@ public class Flammable {
 
     public List<Entry> getFlammables() {
         return this.flammables;
+    }
+
+    public static Flammable getDefault() {
+        return new Flammable(ImmutableList.of());
     }
 
     public static class Entry {
