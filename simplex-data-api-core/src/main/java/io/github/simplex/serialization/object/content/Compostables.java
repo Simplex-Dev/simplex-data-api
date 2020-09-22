@@ -1,4 +1,4 @@
-package io.github.simplex.serialization.object;
+package io.github.simplex.serialization.object.content;
 
 import java.util.Map;
 
@@ -12,9 +12,9 @@ import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 
-public class Compostables implements StorageObject {
+public class Compostables implements ObjectHolder {
     public static final Codec<Compostables> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.FLOAT).fieldOf("composting").forGetter(Compostables::getMap)
+            Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.FLOAT).optionalFieldOf("composting", ImmutableMap.of()).forGetter(Compostables::getMap)
     ).apply(instance, Compostables::new));
     private final Map<Item, Float> map;
 

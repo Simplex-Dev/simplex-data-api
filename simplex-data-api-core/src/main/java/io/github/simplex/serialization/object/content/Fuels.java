@@ -1,4 +1,4 @@
-package io.github.simplex.serialization.object;
+package io.github.simplex.serialization.object.content;
 
 import java.util.Map;
 
@@ -12,9 +12,9 @@ import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 
-public class Fuels implements StorageObject {
+public class Fuels implements ObjectHolder {
     public static final Codec<Fuels> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.INT).fieldOf("fuel").forGetter(Fuels::getMap)
+            Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.INT).optionalFieldOf("fuel", ImmutableMap.of()).forGetter(Fuels::getMap)
     ).apply(instance, Fuels::new));
 
     private final Map<Item, Integer> map;

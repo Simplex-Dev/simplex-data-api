@@ -1,4 +1,4 @@
-package io.github.simplex.serialization.object;
+package io.github.simplex.serialization.object.content;
 
 import java.util.Map;
 
@@ -12,9 +12,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 
-public class Paveables implements StorageObject {
+public class Paveables implements ObjectHolder {
     public static final Codec<Paveables> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(IdentifiableCodecs.BLOCK, BlockState.CODEC).fieldOf("shovel_path").forGetter(Paveables::getMap)
+            Codec.unboundedMap(IdentifiableCodecs.BLOCK, BlockState.CODEC).optionalFieldOf("shovel_path", ImmutableMap.of()).forGetter(Paveables::getMap)
     ).apply(instance, Paveables::new));
 
     private final Map<Block, BlockState> map;

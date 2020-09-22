@@ -1,4 +1,4 @@
-package io.github.simplex.serialization.object;
+package io.github.simplex.serialization.object.content;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ import net.minecraft.block.Block;
 
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 
-public class Flammables implements StorageObject {
+public class Flammables implements ObjectHolder {
     public static final Codec<Flammables> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.list(Entry.CODEC).fieldOf("flammables").forGetter(Flammables::getFlammables)
+            Codec.list(Entry.CODEC).optionalFieldOf("flammables", ImmutableList.of()).forGetter(Flammables::getFlammables)
     ).apply(instance, Flammables::new));
 
     private final List<Entry> flammables;
