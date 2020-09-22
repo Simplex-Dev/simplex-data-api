@@ -6,6 +6,7 @@ import io.github.simplex.serialization.hooks.api.StrippableBlockRegistry;
 import io.github.simplex.serialization.util.IdentifiableCodecs;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -19,7 +20,7 @@ public class Strippables implements ObjectHolder {
     private final Map<Block, Block> map;
 
     public Strippables(Map<Block, Block> map) {
-        this.map = map;
+        this.map = Maps.newHashMap(map);
     }
 
     public Map<Block, Block> getMap() {

@@ -15,11 +15,12 @@
   "icon": "assets/simplex-data-api-nbt/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "io.github.simplex.serialization.nbt.NbtDeserializer"
-    ],
+    "main": [],
     "client": [],
-    "server": []
+    "server": [],
+    "simplex-data-api": [
+      "io.github.simplex.serialization.nbt.NbtDeserializer"
+    ]
   },
   "depends": {
     "fabricloader": ">=0.4.0",

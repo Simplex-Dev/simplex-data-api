@@ -5,6 +5,7 @@ import java.util.Map;
 import io.github.simplex.serialization.hooks.api.PaveableBlockRegistry;
 import io.github.simplex.serialization.util.IdentifiableCodecs;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -20,7 +21,7 @@ public class Paveables implements ObjectHolder {
     private final Map<Block, BlockState> map;
 
     Paveables(Map<Block, BlockState> map) {
-        this.map = map;
+        this.map = Maps.newHashMap(map);
     }
 
     public Map<Block, BlockState> getMap() {

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 import io.github.simplex.serialization.AbstractDeserializer;
+import io.github.simplex.serialization.nbt.server.NbtCommand;
 import io.github.simplex.serialization.object.content.Compostables;
 import io.github.simplex.serialization.object.content.Flammables;
 import io.github.simplex.serialization.object.content.Fuels;
@@ -27,6 +28,15 @@ public class NbtDeserializer extends AbstractDeserializer {
     private static final Path CONFIG_DAT_PATH = FabricLoader.getInstance().getConfigDir().resolve("simplex-data-api-nbt.dat");
     private static final Consumer<String> STDERR = System.err::println;
     private static final ObjectsHolder REGISTRY = new ObjectsHolder();
+    private static NbtDeserializer instance;
+
+    public static NbtDeserializer getInstance() {
+        return instance;
+    }
+
+    public static ObjectsHolder getRegistry() {
+        return REGISTRY;
+    }
 
     @Override
     public void serialize() throws IOException {
@@ -98,6 +108,8 @@ public class NbtDeserializer extends AbstractDeserializer {
 
     @Override
     public void onInitialize() {
+        LOGGER.info("Registering Nbt Deserializer!");
+        NbtCommand.register();
         this.deserializeQuietly();
         this.serializeQuietly();
     }

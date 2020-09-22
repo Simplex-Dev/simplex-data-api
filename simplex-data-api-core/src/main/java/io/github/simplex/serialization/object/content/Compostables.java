@@ -4,6 +4,7 @@ import java.util.Map;
 
 import io.github.simplex.serialization.util.IdentifiableCodecs;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -19,7 +20,7 @@ public class Compostables implements ObjectHolder {
     private final Map<Item, Float> map;
 
     public Compostables(Map<Item, Float> map) {
-        this.map = map;
+        this.map = Maps.newHashMap(map);
     }
 
     public Map<Item, Float> getMap() {

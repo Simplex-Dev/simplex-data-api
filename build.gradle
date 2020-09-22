@@ -20,7 +20,7 @@ class Globals {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
+version = Globals.baseVersion
 
 import org.apache.commons.codec.digest.DigestUtils
 

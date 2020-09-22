@@ -4,6 +4,7 @@ import java.util.Map;
 
 import io.github.simplex.serialization.util.IdentifiableCodecs;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -20,7 +21,7 @@ public class Fuels implements ObjectHolder {
     private final Map<Item, Integer> map;
 
     Fuels(Map<Item, Integer> map) {
-        this.map = map;
+        this.map = Maps.newHashMap(map);
     }
 
     public Map<Item, Integer> getMap() {

@@ -15,7 +15,9 @@
   "icon": "assets/simplex-data-api-core/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [],
+    "main": [
+      "io.github.simplex.serialization.command.SimplexData::initialize"
+    ],
     "client": [],
     "server": []
   },
