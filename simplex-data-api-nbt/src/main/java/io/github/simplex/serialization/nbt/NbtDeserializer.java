@@ -92,6 +92,7 @@ public class NbtDeserializer extends AbstractDeserializer {
         }
         if (!Files.exists(CONFIG_DAT_PATH)) {
             Files.createFile(CONFIG_DAT_PATH);
+            NbtIo.writeCompressed(new CompoundTag(), CONFIG_DAT_PATH.toFile());
         }
     }
 
