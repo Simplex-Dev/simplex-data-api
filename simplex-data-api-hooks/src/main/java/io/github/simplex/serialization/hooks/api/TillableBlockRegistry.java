@@ -1,26 +1,26 @@
 package io.github.simplex.serialization.hooks.api;
 
 import io.github.simplex.serialization.hooks.Block2BlockStateMap;
-import io.github.simplex.serialization.hooks.mixin.ShovelItemAccessor;
+import io.github.simplex.serialization.hooks.mixin.HoeItemAccessor;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 
-public enum ShovelPathRegistry implements Block2BlockStateMap {
+public enum TillableBlockRegistry implements Block2BlockStateMap {
     INSTANCE;
 
     @Override
     public BlockState get(Block block) {
-        return ShovelItemAccessor.getPathStates().get(block);
+        return HoeItemAccessor.getTilledBlocks().get(block);
     }
 
     @Override
     public void add(Block block, BlockState state) {
-        ShovelItemAccessor.getPathStates().put(block, state);
+        HoeItemAccessor.getTilledBlocks().put(block, state);
     }
 
     @Override
     public void remove(Block block) {
-        ShovelItemAccessor.getPathStates().remove(block);
+        HoeItemAccessor.getTilledBlocks().remove(block);
     }
 }

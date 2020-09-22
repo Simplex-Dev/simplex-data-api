@@ -2,7 +2,7 @@ package io.github.simplex.serialization.object.content;
 
 import java.util.Map;
 
-import io.github.simplex.serialization.hooks.api.ShovelPathRegistry;
+import io.github.simplex.serialization.hooks.api.PaveableBlockRegistry;
 import io.github.simplex.serialization.util.IdentifiableCodecs;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
@@ -14,7 +14,7 @@ import net.minecraft.block.Blocks;
 
 public class Paveables implements ObjectHolder {
     public static final Codec<Paveables> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(IdentifiableCodecs.BLOCK, BlockState.CODEC).optionalFieldOf("shovel_path", ImmutableMap.of()).forGetter(Paveables::getMap)
+            Codec.unboundedMap(IdentifiableCodecs.BLOCK, BlockState.CODEC).optionalFieldOf("paveables", ImmutableMap.of()).forGetter(Paveables::getMap)
     ).apply(instance, Paveables::new));
 
     private final Map<Block, BlockState> map;
@@ -29,12 +29,12 @@ public class Paveables implements ObjectHolder {
 
     @Override
     public void addAll() {
-        this.getMap().forEach(ShovelPathRegistry.INSTANCE::add);
+        this.getMap().forEach(PaveableBlockRegistry.INSTANCE::add);
     }
 
     @Override
     public void removeAll() {
-        this.getMap().keySet().forEach(ShovelPathRegistry.INSTANCE::remove);
+        this.getMap().keySet().forEach(PaveableBlockRegistry.INSTANCE::remove);
     }
 
     public static Paveables getDefault() {

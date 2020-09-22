@@ -14,7 +14,7 @@ import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 
 public class Compostables implements ObjectHolder {
     public static final Codec<Compostables> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.FLOAT).optionalFieldOf("composting", ImmutableMap.of()).forGetter(Compostables::getMap)
+            Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.FLOAT).optionalFieldOf("compostables", ImmutableMap.of()).forGetter(Compostables::getMap)
     ).apply(instance, Compostables::new));
     private final Map<Item, Float> map;
 
