@@ -44,12 +44,12 @@ public class NbtDeserializer extends AbstractDeserializer {
         REGISTRY.removeAll();
         REGISTRY.addAll();
         CompoundTag all = new CompoundTag();
-        all.put("compostables", Compostables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getCompostables()).getOrThrow(false, STDERR));
-        all.put("flammables", Flammables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getFlammables()).getOrThrow(false, STDERR));
-        all.put("fuels", Fuels.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getFuels()).getOrThrow(false, STDERR));
-        all.put("paveables", Paveables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getPaveables()).getOrThrow(false, STDERR));
-        all.put("strippables", Strippables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getStrippables()).getOrThrow(false, STDERR));
-        all.put("tillables", Tillables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getTillables()).getOrThrow(false, STDERR));
+        all.put("compostables", ((CompoundTag) Compostables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getCompostables()).getOrThrow(false, STDERR)).get("compostables"));
+        all.put("flammables", ((CompoundTag)Flammables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getFlammables()).getOrThrow(false, STDERR)).get("flammables"));
+        all.put("fuels", ((CompoundTag)Fuels.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getFuels()).getOrThrow(false, STDERR)).get("fuels"));
+        all.put("paveables", ((CompoundTag)Paveables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getPaveables()).getOrThrow(false, STDERR)).get("paveables"));
+        all.put("strippables", ((CompoundTag)Strippables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getStrippables()).getOrThrow(false, STDERR)).get("strippables"));
+        all.put("tillables", ((CompoundTag)Tillables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getTillables()).getOrThrow(false, STDERR)).get("tillables"));
         NbtIo.writeCompressed(all, CONFIG_DAT_PATH.toFile());
     }
 
