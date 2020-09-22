@@ -34,4 +34,8 @@ public class Tillables implements ObjectHolder {
     public void removeAll() {
 
     }
+
+    public static Tillables getDefault() {
+        return new Tillables(ImmutableMap.of());
+    }
 }

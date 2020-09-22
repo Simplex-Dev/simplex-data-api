@@ -26,6 +26,10 @@ public class Strippables implements ObjectHolder {
         return this.map;
     }
 
+    public static Strippables getDefault() {
+        return new Strippables(ImmutableMap.of());
+    }
+
     @Override
     public void addAll() {
         this.getMap().forEach(StrippableBlockRegistry.INSTANCE::add);
