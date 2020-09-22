@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "io.github.simplex.serialization.hooks.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "AxeItemAccessor",
+    "ShovelItemAccessor"
+  ],
+  "client": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

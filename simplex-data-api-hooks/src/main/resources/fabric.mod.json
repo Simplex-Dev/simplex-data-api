@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "simplex-data-api-hooks",
+  "version": "${version}",
+  "name": "Simplex Data API Hooks",
+  "description": "Common hooks used by data driven content",
+  "authors": [
+    "Simplex Development"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Simplex-Dev/simplex-data-api",
+    "sources": "https://github.com/Simplex-Dev/simplex-data-api"
+  },
+  "license": "Apache-2.0",
+  "icon": "assets/simplex-data-api-hooks/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [],
+    "client": [],
+    "server": []
+  },
+  "mixins": [
+    "simplex-data-api-hooks.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  }
+}

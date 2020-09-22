@@ -12,14 +12,14 @@ import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 
-public class Fuel implements Initializable {
-    public static final Codec<Fuel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.INT).fieldOf("fuel").forGetter(Fuel::getMap)
-    ).apply(instance, Fuel::new));
+public class Fuels implements StorageObject {
+    public static final Codec<Fuels> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.INT).fieldOf("fuel").forGetter(Fuels::getMap)
+    ).apply(instance, Fuels::new));
 
     private final Map<Item, Integer> map;
 
-    Fuel(Map<Item, Integer> map) {
+    Fuels(Map<Item, Integer> map) {
         this.map = map;
     }
 
@@ -28,7 +28,7 @@ public class Fuel implements Initializable {
     }
 
     @Override
-    public void initialize() {
+    public void addAll() {
         this.getMap().forEach(FuelRegistry.INSTANCE::add);
     }
 
@@ -37,8 +37,8 @@ public class Fuel implements Initializable {
         this.getMap().keySet().forEach(FuelRegistry.INSTANCE::remove);
     }
 
-    public static Fuel getDefault() {
-        return new Fuel(ImmutableMap.of(
+    public static Fuels getDefault() {
+        return new Fuels(ImmutableMap.of(
                 Items.GUNPOWDER, 1200,
                 Items.BLAZE_POWDER, 1200
         ));

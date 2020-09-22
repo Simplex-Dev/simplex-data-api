@@ -12,14 +12,14 @@ import net.minecraft.block.Block;
 
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 
-public class Flammable implements Initializable {
-    public static final Codec<Flammable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.list(Entry.CODEC).fieldOf("flammables").forGetter(Flammable::getFlammables)
-    ).apply(instance, Flammable::new));
+public class Flammables implements StorageObject {
+    public static final Codec<Flammables> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.list(Entry.CODEC).fieldOf("flammables").forGetter(Flammables::getFlammables)
+    ).apply(instance, Flammables::new));
 
     private final List<Entry> flammables;
 
-    public Flammable(List<Entry> flammables) {
+    public Flammables(List<Entry> flammables) {
         // Dfu loves immutable collections
         this.flammables = Lists.newArrayList(flammables);
     }
@@ -28,12 +28,12 @@ public class Flammable implements Initializable {
         return this.flammables;
     }
 
-    public static Flammable getDefault() {
-        return new Flammable(ImmutableList.of());
+    public static Flammables getDefault() {
+        return new Flammables(ImmutableList.of());
     }
 
     @Override
-    public void initialize() {
+    public void addAll() {
         for (Entry entry : this.getFlammables()) {
             FlammableBlockRegistry.getDefaultInstance().add(entry.getBlock(), entry.getBurn(), entry.getSpread());
         }

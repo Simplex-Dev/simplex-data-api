@@ -12,13 +12,13 @@ import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 
-public class Compostable implements Initializable {
-    public static final Codec<Compostable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.FLOAT).fieldOf("composting").forGetter(Compostable::getMap)
-    ).apply(instance, Compostable::new));
+public class Compostables implements StorageObject {
+    public static final Codec<Compostables> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.FLOAT).fieldOf("composting").forGetter(Compostables::getMap)
+    ).apply(instance, Compostables::new));
     private final Map<Item, Float> map;
 
-    public Compostable(Map<Item, Float> map) {
+    public Compostables(Map<Item, Float> map) {
         this.map = map;
     }
 
@@ -27,7 +27,7 @@ public class Compostable implements Initializable {
     }
 
     @Override
-    public void initialize() {
+    public void addAll() {
         this.getMap().forEach(CompostingChanceRegistry.INSTANCE::add);
     }
 
@@ -36,8 +36,8 @@ public class Compostable implements Initializable {
         this.getMap().keySet().forEach(CompostingChanceRegistry.INSTANCE::remove);
     }
 
-    public static Compostable getDefault() {
-        return new Compostable(
+    public static Compostables getDefault() {
+        return new Compostables(
                 ImmutableMap.of(
                         Items.POISONOUS_POTATO, 0.1F,
                         Items.DIRT, 0.25F,

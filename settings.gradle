@@ -12,4 +12,5 @@ pluginManagement {
 rootProject.name = 'simplex-data-api'
 
 include 'simplex-data-api-core'
+include 'simplex-data-api-hooks'
 include 'simplex-data-api-nbt'
