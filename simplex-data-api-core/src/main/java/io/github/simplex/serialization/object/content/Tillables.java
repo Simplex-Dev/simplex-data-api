@@ -2,6 +2,7 @@ package io.github.simplex.serialization.object.content;
 
 import java.util.Map;
 
+import io.github.simplex.serialization.hooks.api.TillableBlockRegistry;
 import io.github.simplex.serialization.util.IdentifiableCodecs;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -28,12 +29,12 @@ public class Tillables implements ObjectHolder {
 
     @Override
     public void addAll() {
-
+        this.getMap().forEach(TillableBlockRegistry.INSTANCE::add);
     }
 
     @Override
     public void removeAll() {
-
+        this.getMap().keySet().forEach(TillableBlockRegistry.INSTANCE::remove);
     }
 
     public static Tillables getDefault() {

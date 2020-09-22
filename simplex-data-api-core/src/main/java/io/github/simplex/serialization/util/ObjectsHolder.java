@@ -1,13 +1,13 @@
 package io.github.simplex.serialization.util;
 
+import java.util.Optional;
+
 import io.github.simplex.serialization.object.content.Compostables;
 import io.github.simplex.serialization.object.content.Flammables;
 import io.github.simplex.serialization.object.content.Fuels;
 import io.github.simplex.serialization.object.content.Paveables;
 import io.github.simplex.serialization.object.content.Strippables;
 import io.github.simplex.serialization.object.content.Tillables;
-
-import net.minecraft.nbt.CompoundTag;
 
 public class ObjectsHolder {
     private Compostables compostables;
@@ -18,27 +18,27 @@ public class ObjectsHolder {
     private Tillables tillables;
 
     public Compostables getCompostables() {
-        return this.compostables;
+        return Optional.ofNullable(this.compostables).orElse(Compostables.getDefault());
     }
 
     public Flammables getFlammables() {
-        return this.flammables;
+        return Optional.ofNullable(this.flammables).orElse(Flammables.getDefault());
     }
 
     public Fuels getFuels() {
-        return this.fuels;
+        return Optional.ofNullable(this.fuels).orElse(Fuels.getDefault());
     }
 
     public Paveables getPaveables() {
-        return this.paveables;
+        return Optional.ofNullable(this.paveables).orElse(Paveables.getDefault());
     }
 
     public Strippables getStrippables() {
-        return this.strippables;
+        return Optional.ofNullable(this.strippables).orElse(Strippables.getDefault());
     }
 
     public Tillables getTillables() {
-        return this.tillables;
+        return Optional.ofNullable(this.tillables).orElse(Tillables.getDefault());
     }
 
     public void setCompostables(Compostables compostables) {
