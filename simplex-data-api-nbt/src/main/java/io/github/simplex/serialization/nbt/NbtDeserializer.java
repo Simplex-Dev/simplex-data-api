@@ -30,6 +30,7 @@ public class NbtDeserializer extends AbstractDeserializer {
 
     @Override
     public void serialize() throws IOException {
+        this.check();
         REGISTRY.removeAll();
         REGISTRY.addAll();
         CompoundTag all = new CompoundTag();
@@ -44,6 +45,7 @@ public class NbtDeserializer extends AbstractDeserializer {
 
     @Override
     public void deserialize() throws IOException {
+        this.check();
         CompoundTag all = NbtIo.readCompressed(CONFIG_DAT_PATH.toFile());
 
         if (!all.contains("compostables")) {
@@ -81,8 +83,6 @@ public class NbtDeserializer extends AbstractDeserializer {
         }
         Tillables tillables = Tillables.CODEC.decode(NbtOps.INSTANCE, all).getOrThrow(false, STDERR).getFirst();
         REGISTRY.setTillables(tillables);
-
-        this.serialize();
     }
 
     @Override
@@ -98,5 +98,6 @@ public class NbtDeserializer extends AbstractDeserializer {
     @Override
     public void onInitialize() {
         this.deserializeQuietly();
+        this.serializeQuietly();
     }
 }
