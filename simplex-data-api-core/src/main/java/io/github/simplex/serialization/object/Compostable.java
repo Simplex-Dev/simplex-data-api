@@ -10,7 +10,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 
-public class Compostable {
+import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
+
+public class Compostable implements Initializable {
     public static final Codec<Compostable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.FLOAT).fieldOf("composting").forGetter(Compostable::getMap)
     ).apply(instance, Compostable::new));
@@ -22,6 +24,16 @@ public class Compostable {
 
     public Map<Item, Float> getMap() {
         return this.map;
+    }
+
+    @Override
+    public void initialize() {
+        this.getMap().forEach(CompostingChanceRegistry.INSTANCE::add);
+    }
+
+    @Override
+    public void removeAll() {
+        this.getMap().keySet().forEach(CompostingChanceRegistry.INSTANCE::remove);
     }
 
     public static Compostable getDefault() {

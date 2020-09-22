@@ -10,7 +10,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.Block;
 
-public class Flammable {
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+
+public class Flammable implements Initializable {
     public static final Codec<Flammable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(Entry.CODEC).fieldOf("flammables").forGetter(Flammable::getFlammables)
     ).apply(instance, Flammable::new));
@@ -28,6 +30,18 @@ public class Flammable {
 
     public static Flammable getDefault() {
         return new Flammable(ImmutableList.of());
+    }
+
+    @Override
+    public void initialize() {
+        for (Entry entry : this.getFlammables()) {
+            FlammableBlockRegistry.getDefaultInstance().add(entry.getBlock(), entry.getBurn(), entry.getSpread());
+        }
+    }
+
+    @Override
+    public void removeAll() {
+        this.getFlammables().stream().map(Entry::getBlock).forEach(FlammableBlockRegistry.getDefaultInstance()::remove);
     }
 
     public static class Entry {

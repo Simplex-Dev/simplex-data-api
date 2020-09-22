@@ -10,7 +10,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 
-public class Fuel {
+import net.fabricmc.fabric.api.registry.FuelRegistry;
+
+public class Fuel implements Initializable {
     public static final Codec<Fuel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.INT).fieldOf("fuel").forGetter(Fuel::getMap)
     ).apply(instance, Fuel::new));
@@ -23,6 +25,16 @@ public class Fuel {
 
     public Map<Item, Integer> getMap() {
         return this.map;
+    }
+
+    @Override
+    public void initialize() {
+        this.getMap().forEach(FuelRegistry.INSTANCE::add);
+    }
+
+    @Override
+    public void removeAll() {
+        this.getMap().keySet().forEach(FuelRegistry.INSTANCE::remove);
     }
 
     public static Fuel getDefault() {

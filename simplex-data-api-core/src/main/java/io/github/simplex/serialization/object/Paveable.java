@@ -12,7 +12,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 
-public class Paveable {
+// TODO: add hooks for this
+public class Paveable implements Initializable {
     public static final Codec<Paveable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.unboundedMap(IdentifiableCodecs.BLOCK, BlockState.CODEC).fieldOf("shovel_path").forGetter(Paveable::getMap)
     ).apply(instance, Paveable::new));
@@ -25,6 +26,16 @@ public class Paveable {
 
     public Map<Block, BlockState> getMap() {
         return this.map;
+    }
+
+    @Override
+    public void initialize() {
+
+    }
+
+    @Override
+    public void removeAll() {
+
     }
 
     public static Paveable getDefault() {
