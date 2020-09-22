@@ -1,79 +1,262 @@
 plugins {
-	id 'fabric-loom' version '0.4-SNAPSHOT'
+	id 'java'
+	id 'eclipse'
+	id 'idea'
 	id 'maven-publish'
+	id 'fabric-loom' version '0.4-SNAPSHOT' apply false
+	id 'org.ajoberstar.grgit' version '3.1.1'
+	id 'signing'
+	id 'com.jfrog.bintray' version '1.8.4'
+}
+
+def ENV = System.getenv()
+
+class Globals {
+	static def baseVersion = "0.1.0+alpha.1"
+	static def mcVersion = "1.16.2"
+	static def yarnVersion = "+build.1"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-archivesBaseName = project.archives_base_name
-version = project.mod_version
-group = project.maven_group
+version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
 
-minecraft {
-}
+import org.apache.commons.codec.digest.DigestUtils
 
-dependencies {
-	//to change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-}
-
-processResources {
-	inputs.property "version", project.version
-
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
-		expand "version": project.version
+def getSubprojectVersion(project, version) {
+	if (grgit == null) {
+		return version + "+nogit"
 	}
-
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
+	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
+	if (latestCommits.isEmpty()) {
+		return version + "+uncommited"
+	} else {
+		return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(Globals.mcVersion).substring(0, 2)
 	}
 }
 
-// ensure that the encoding is set to UTF-8, no matter what the system default is
-// this fixes some edge cases with special characters not displaying correctly
-// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
-}
+allprojects {
+	apply plugin: 'maven-publish'
+	apply plugin: 'signing'
+	apply plugin: 'com.jfrog.bintray'
+	apply plugin: 'fabric-loom'
 
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
-}
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
 
-jar {
-	from "LICENSE"
-}
+	group = "io.github.simplex-dev"
 
-// configure the maven publication
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(jar) {
-				builtBy remapJar
+	sourceSets {
+		testmod {
+			compileClasspath += main.compileClasspath
+			runtimeClasspath += main.runtimeClasspath
+		}
+	}
+
+	minecraft {
+	}
+
+	dependencies {
+		minecraft "com.mojang:minecraft:$Globals.mcVersion"
+		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
+		modImplementation "net.fabricmc:fabric-loader:0.9.3+build.207"
+		modImplementation "net.fabricmc.fabric-api:fabric-api:0.21.0+build.407-1.16"
+	}
+
+	configurations {
+		dev
+	}
+
+	jar {
+		classifier = "dev"
+	}
+
+	afterEvaluate {
+		remapJar {
+			input = file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar")
+			archiveName = "${archivesBaseName}-${version}.jar"
+		}
+
+		artifacts {
+			dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: jar
+		}
+
+		processResources {
+			inputs.property "version", project.version
+
+			from(sourceSets.main.resources.srcDirs) {
+				include "fabric.mod.json"
+				expand "version": project.version
 			}
-			artifact("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar"){
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
+
+			from(sourceSets.main.resources.srcDirs) {
+				exclude "fabric.mod.json"
 			}
 		}
 	}
 
-	// select the repositories you want to publish to
-	repositories {
-		// uncomment to publish to the local maven
-		// mavenLocal()
+	task sourcesJar(type: Jar, dependsOn: classes) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+
+	javadoc {
+		options {
+			source = "8"
+			encoding = 'UTF-8'
+			charSet = 'UTF-8'
+			memberLevel = JavadocMemberLevel.PACKAGE
+			links(
+					'https://guava.dev/releases/21.0/api/docs/',
+					'https://asm.ow2.io/javadoc/',
+					'https://docs.oracle.com/javase/8/docs/api/',
+					'https://jenkins.liteloader.com/job/Mixin/javadoc/',
+					'https://logging.apache.org/log4j/2.x/log4j-api/apidocs/'
+					// Need to add minecraft jd publication etc once there is one available
+			)
+			// Disable the crazy super-strict doclint tool in Java 8
+			addStringOption('Xdoclint:none', '-quiet')
+		}
+		allprojects.each {
+			source(it.sourceSets.main.allJava.srcDirs)
+		}
+		classpath = sourceSets.main.compileClasspath
+		include("*")
+		failOnError false
+	}
+}
+
+task javadocJar(type: Jar) {
+	dependsOn javadoc
+	from javadoc.destinationDir
+	//Set as `fatjavadoc` to prevent an ide form trying to use this javadoc, over using the modules javadoc
+	classifier = 'fatjavadoc'
+}
+build.dependsOn javadocJar
+
+subprojects {
+	dependencies {
+		testmodImplementation sourceSets.main.output
+	}
+
+	task remapMavenJar(type: Copy, dependsOn: remapJar) {
+		afterEvaluate {
+			from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
+			into("${project.buildDir}/libs/")
+			rename { String fn -> "$archivesBaseName-${version}-maven.jar" }
+		}
+	}
+
+	publishing {
+		publications {
+			create("${archivesBaseName}_mavenJava", MavenPublication) {
+				afterEvaluate {
+					artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+						builtBy remapMavenJar
+					}
+					artifact(sourcesJar) {
+						builtBy remapSourcesJar
+					}
+				}
+			}
+		}
+	}
+
+	bintray {
+		user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+		key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
+		publications = ["${archivesBaseName}_mavenJava"]
+		publish = true
+		pkg {
+			repo = "Simplex-Maven"
+			name = archivesBaseName
+			userOrg = "simplex-dev"
+			licenses = ["Apache-2.0"]
+			version {
+				released = new Date()
+				githubRepo = 'Simplex-Dev/simplex-data-api'
+				websiteUrl = 'https://simplex-dev.github.io'
+				issueTrackerUrl = 'https://github.com/Simplex-Dev/simplex-data-api/issues'
+				vcsUrl = 'https://github.com/Simplex-Dev/simplex-data-api.git'
+				gpg {
+					sign = true
+				}
+			}
+		}
+	}
+
+	javadoc.enabled = false
+}
+
+task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
+	afterEvaluate {
+		input = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
+		archiveName = "${archivesBaseName}-${version}-maven.jar"
+		addNestedDependencies = false
+	}
+}
+
+subprojects.each { bintrayUpload.dependsOn("${it.path}:bintrayUpload") }
+
+bintray {
+	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+	key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
+	publications = ["${archivesBaseName}_mavenJava"]
+	publish = true
+	pkg {
+		repo = "Simplex-Maven"
+		name = "simplex-data-api"
+		userOrg = "simplex-dev"
+		licenses = ["Apache-2.0"]
+		version {
+			released = new Date()
+			githubRepo = 'Simplex-Dev/simplex-data-api'
+			websiteUrl = 'https://simplex-dev.github.io'
+			issueTrackerUrl = 'https://github.com/Simplex-Dev/simplex-data-api/issues'
+			vcsUrl = 'https://github.com/Simplex-Dev/simplex-data-api.git'
+			gpg {
+				sign = true
+			}
+		}
+	}
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+				builtBy remapMavenJar
+			}
+			artifact(sourcesJar) {
+				builtBy remapSourcesJar
+			}
+			artifact javadocJar
+			pom.withXml {
+				def depsNode = asNode().appendNode("dependencies")
+				subprojects.each {
+					def depNode = depsNode.appendNode("dependency")
+					depNode.appendNode("groupId", it.group)
+					depNode.appendNode("artifactId", it.name)
+					depNode.appendNode("version", it.version)
+					depNode.appendNode("scope", "compile")
+				}
+			}
+		}
+	}
+}
+
+sourceSets {
+	testmod
+}
+
+dependencies {
+	afterEvaluate {
+		subprojects.each {
+			implementation project(path: ":${it.name}", configuration: "dev")
+			include project("${it.name}:")
+
+			testmodImplementation project("${it.name}:").sourceSets.testmod.output
+		}
 	}
 }
