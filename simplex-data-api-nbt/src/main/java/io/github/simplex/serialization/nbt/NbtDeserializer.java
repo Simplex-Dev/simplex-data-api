@@ -113,4 +113,8 @@ public class NbtDeserializer extends AbstractDeserializer {
         this.deserializeQuietly();
         this.serializeQuietly();
     }
+
+    {
+        instance = this;
+    }
 }
