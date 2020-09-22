@@ -1,0 +1,6 @@
+archivesBaseName = "simplex-data-api-nbt"
+version = getSubprojectVersion(project, "0.1.0")
+
+dependencies {
+    implementation project(path: ':simplex-data-api-core', configuration: 'dev')
+}

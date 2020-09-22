@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "simplex-data-api-core",
+  "id": "simplex-data-api-nbt",
   "version": "${version}",
-  "name": "Simplex Data API Core",
-  "description": "The core of data driven content",
+  "name": "Simplex Data API Nbt",
+  "description": "Nbt (de)serialization of data",
   "authors": [
     "Simplex Development"
   ],
@@ -12,10 +12,12 @@
     "sources": "https://github.com/Simplex-Dev/simplex-data-api"
   },
   "license": "Apache-2.0",
-  "icon": "assets/simplex-data-api-core/icon.png",
+  "icon": "assets/simplex-data-api-nbt/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [],
+    "main": [
+      "io.github.simplex.serialization.nbt.NbtDeserializer"
+    ],
     "client": [],
     "server": []
   },
