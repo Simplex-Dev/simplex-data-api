@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 import io.github.simplex.serialization.AbstractDeserializer;
+import io.github.simplex.serialization.hooks.mixin.MinecraftServerAccessor;
 import io.github.simplex.serialization.nbt.server.NbtCommand;
 import io.github.simplex.serialization.object.content.Compostables;
 import io.github.simplex.serialization.object.content.Flammables;
@@ -20,15 +21,16 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.server.MinecraftServer;
 
 import net.fabricmc.loader.api.FabricLoader;
 
 public class NbtDeserializer extends AbstractDeserializer {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final Path CONFIG_DAT_PATH = FabricLoader.getInstance().getConfigDir().resolve("simplex-data-api-nbt.dat");
     private static final Consumer<String> STDERR = System.err::println;
     private static final ObjectsHolder REGISTRY = new ObjectsHolder();
     private static NbtDeserializer instance;
+    private static Path configDatPath = FabricLoader.getInstance().getConfigDir().resolve("simplex-data-api-nbt.dat");
 
     public static NbtDeserializer getInstance() {
         return instance;
@@ -51,13 +53,13 @@ public class NbtDeserializer extends AbstractDeserializer {
         all.put("paveables", ((CompoundTag) Paveables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getPaveables()).getOrThrow(false, STDERR)).getCompound("paveables"));
         all.put("strippables", ((CompoundTag) Strippables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getStrippables()).getOrThrow(false, STDERR)).getCompound("strippables"));
         all.put("tillables", ((CompoundTag) Tillables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getTillables()).getOrThrow(false, STDERR)).getCompound("tillables"));
-        NbtIo.writeCompressed(all, CONFIG_DAT_PATH.toFile());
+        NbtIo.writeCompressed(all, configDatPath.toFile());
     }
 
     @Override
     public void deserialize() throws IOException {
         this.check();
-        CompoundTag all = NbtIo.readCompressed(CONFIG_DAT_PATH.toFile());
+        CompoundTag all = NbtIo.readCompressed(configDatPath.toFile());
 
         if (!all.contains("compostables")) {
             all.put("compostables", ((CompoundTag) Compostables.CODEC.encodeStart(NbtOps.INSTANCE, Compostables.getDefault()).getOrThrow(false, STDERR)).get("compostables"));
@@ -98,17 +100,18 @@ public class NbtDeserializer extends AbstractDeserializer {
 
     @Override
     protected void check() throws IOException {
-        if (Files.isDirectory(CONFIG_DAT_PATH)) {
-            Files.delete(CONFIG_DAT_PATH);
+        if (Files.isDirectory(configDatPath)) {
+            Files.delete(configDatPath);
         }
-        if (!Files.exists(CONFIG_DAT_PATH)) {
-            Files.createFile(CONFIG_DAT_PATH);
-            NbtIo.writeCompressed(new CompoundTag(), CONFIG_DAT_PATH.toFile());
+        if (!Files.exists(configDatPath)) {
+            Files.createFile(configDatPath);
+            NbtIo.writeCompressed(new CompoundTag(), configDatPath.toFile());
         }
     }
 
     @Override
-    public void onInitialize() {
+    public void onServerStarting(MinecraftServer server) {
+        configDatPath = ((MinecraftServerAccessor) server).getSession().getWorldDirectory(server.getOverworld().getRegistryKey()).toPath();
         LOGGER.info("Registering Nbt Deserializer!");
         NbtCommand.register();
         this.deserializeQuietly();

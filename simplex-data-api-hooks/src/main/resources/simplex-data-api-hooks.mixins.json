@@ -5,6 +5,7 @@
   "mixins": [
     "AxeItemAccessor",
     "HoeItemAccessor",
+    "MinecraftServerAccessor",
     "ShovelItemAccessor"
   ],
   "client": [],

@@ -2,9 +2,9 @@ package io.github.simplex.serialization;
 
 import java.io.IOException;
 
-import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-public abstract class AbstractDeserializer implements ModInitializer {
+public abstract class AbstractDeserializer implements ServerLifecycleEvents.ServerStarting {
     public abstract void serialize() throws IOException;
 
     public void serializeQuietly() {
