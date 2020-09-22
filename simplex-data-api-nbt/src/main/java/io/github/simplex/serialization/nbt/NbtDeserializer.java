@@ -40,16 +40,17 @@ public class NbtDeserializer extends AbstractDeserializer {
 
     @Override
     public void serialize() throws IOException {
-        this.check();
         REGISTRY.removeAll();
         REGISTRY.addAll();
+        this.check();
         CompoundTag all = new CompoundTag();
-        all.put("compostables", ((CompoundTag) Compostables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getCompostables()).getOrThrow(false, STDERR)));
-        all.put("flammables", ((CompoundTag) Flammables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getFlammables()).getOrThrow(false, STDERR)));
-        all.put("fuels", ((CompoundTag) Fuels.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getFuels()).getOrThrow(false, STDERR)));
-        all.put("paveables", ((CompoundTag) Paveables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getPaveables()).getOrThrow(false, STDERR)));
-        all.put("strippables", ((CompoundTag) Strippables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getStrippables()).getOrThrow(false, STDERR)));
-        all.put("tillables", ((CompoundTag) Tillables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getTillables()).getOrThrow(false, STDERR)));
+        System.out.println(((CompoundTag) Compostables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getCompostables()).getOrThrow(false, STDERR)).getCompound("compostables").toString());
+        all.put("compostables", ((CompoundTag) Compostables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getCompostables()).getOrThrow(false, STDERR)).getCompound("compostables"));
+        all.put("flammables", ((CompoundTag) Flammables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getFlammables()).getOrThrow(false, STDERR)).getCompound("flammables"));
+        all.put("fuels", ((CompoundTag) Fuels.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getFuels()).getOrThrow(false, STDERR)).getCompound("fuels"));
+        all.put("paveables", ((CompoundTag) Paveables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getPaveables()).getOrThrow(false, STDERR)).getCompound("paveables"));
+        all.put("strippables", ((CompoundTag) Strippables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getStrippables()).getOrThrow(false, STDERR)).getCompound("strippables"));
+        all.put("tillables", ((CompoundTag) Tillables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getTillables()).getOrThrow(false, STDERR)).getCompound("tillables"));
         NbtIo.writeCompressed(all, CONFIG_DAT_PATH.toFile());
     }
 

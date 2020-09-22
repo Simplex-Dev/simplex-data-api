@@ -82,6 +82,7 @@ public class NbtCommand {
                                                                             BlockState to = BlockStateArgumentType.getBlockState(ctx, "to").getBlockState();
                                                                             NbtDeserializer.getRegistry().getPaveables().getMap().put(from, to);
                                                                             NbtDeserializer.getInstance().serializeQuietly();
+                                                                            NbtDeserializer.getInstance().deserializeQuietly();
                                                                             return 1;
                                                                         })
                                                         )
@@ -98,6 +99,7 @@ public class NbtCommand {
                                                                             Block to = BlockStateArgumentType.getBlockState(ctx, "to").getBlockState().getBlock();
                                                                             NbtDeserializer.getRegistry().getStrippables().getMap().put(from, to);
                                                                             NbtDeserializer.getInstance().serializeQuietly();
+                                                                            NbtDeserializer.getInstance().deserializeQuietly();
                                                                             return 1;
                                                                         })
                                                         )
@@ -114,6 +116,7 @@ public class NbtCommand {
                                                                             BlockState to = BlockStateArgumentType.getBlockState(ctx, "to").getBlockState();
                                                                             NbtDeserializer.getRegistry().getTillables().getMap().put(from, to);
                                                                             NbtDeserializer.getInstance().serializeQuietly();
+                                                                            NbtDeserializer.getInstance().deserializeQuietly();
                                                                             return 1;
                                                                         })
                                                         )
@@ -129,6 +132,7 @@ public class NbtCommand {
                                                             Item item = ItemStackArgumentType.getItemStackArgument(ctx, "key").getItem();
                                                             NbtDeserializer.getRegistry().getCompostables().getMap().remove(item);
                                                             NbtDeserializer.getInstance().serializeQuietly();
+                                                            NbtDeserializer.getInstance().deserializeQuietly();
                                                             return 1;
                                                         })
                                         )
@@ -141,6 +145,7 @@ public class NbtCommand {
                                                             Block block = BlockStateArgumentType.getBlockState(ctx, "key").getBlockState().getBlock();
                                                             NbtDeserializer.getRegistry().getFlammables().getFlammables().removeIf(entry -> entry.getBlock() == block);
                                                             NbtDeserializer.getInstance().serializeQuietly();
+                                                            NbtDeserializer.getInstance().deserializeQuietly();
                                                             return 1;
                                                         })
                                         )
@@ -153,6 +158,7 @@ public class NbtCommand {
                                                             Item item = ItemStackArgumentType.getItemStackArgument(ctx, "key").getItem();
                                                             NbtDeserializer.getRegistry().getFuels().getMap().remove(item);
                                                             NbtDeserializer.getInstance().serializeQuietly();
+                                                            NbtDeserializer.getInstance().deserializeQuietly();
                                                             return 1;
                                                         })
                                         )
@@ -165,6 +171,7 @@ public class NbtCommand {
                                                             Block from = BlockStateArgumentType.getBlockState(ctx, "key").getBlockState().getBlock();
                                                             NbtDeserializer.getRegistry().getPaveables().getMap().remove(from);
                                                             NbtDeserializer.getInstance().serializeQuietly();
+                                                            NbtDeserializer.getInstance().deserializeQuietly();
                                                             return 1;
                                                         })
                                         )
@@ -177,6 +184,7 @@ public class NbtCommand {
                                                             Block from = BlockStateArgumentType.getBlockState(ctx, "key").getBlockState().getBlock();
                                                             NbtDeserializer.getRegistry().getStrippables().getMap().remove(from);
                                                             NbtDeserializer.getInstance().serializeQuietly();
+                                                            NbtDeserializer.getInstance().deserializeQuietly();
                                                             return 1;
                                                         })
                                         )
@@ -189,6 +197,7 @@ public class NbtCommand {
                                                             Block from = BlockStateArgumentType.getBlockState(ctx, "key").getBlockState().getBlock();
                                                             NbtDeserializer.getRegistry().getTillables().getMap().remove(from);
                                                             NbtDeserializer.getInstance().serializeQuietly();
+                                                            NbtDeserializer.getInstance().deserializeQuietly();
                                                             return 1;
                                                         })
                                         )
