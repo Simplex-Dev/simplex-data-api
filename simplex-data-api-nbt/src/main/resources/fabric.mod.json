@@ -15,7 +15,9 @@
   "icon": "assets/simplex-data-api-nbt/icon.png",
   "environment": "*",
   "entrypoints": {
-    "main": [],
+    "main": [
+      "io.github.simplex.serialization.nbt.NbtDeserializer"
+    ],
     "client": [],
     "server": [],
     "simplex-data-api": [

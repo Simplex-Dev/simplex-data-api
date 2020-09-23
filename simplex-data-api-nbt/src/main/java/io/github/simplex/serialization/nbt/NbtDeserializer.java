@@ -1,5 +1,6 @@
 package io.github.simplex.serialization.nbt;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,10 +23,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
 
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 
-public class NbtDeserializer extends AbstractDeserializer {
+public class NbtDeserializer extends AbstractDeserializer implements ModInitializer {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Consumer<String> STDERR = System.err::println;
     private static final ObjectsHolder REGISTRY = new ObjectsHolder();
@@ -48,7 +51,6 @@ public class NbtDeserializer extends AbstractDeserializer {
         REGISTRY.addAll();
         this.check();
         CompoundTag all = new CompoundTag();
-        System.out.println(((CompoundTag) Compostables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getCompostables()).getOrThrow(false, STDERR)).getCompound("compostables").toString());
         all.put("compostables", ((CompoundTag) Compostables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getCompostables()).getOrThrow(false, STDERR)).getCompound("compostables"));
         all.put("flammables", ((CompoundTag) Flammables.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getFlammables()).getOrThrow(false, STDERR)).getCompound("flammables"));
         all.put("fuels", ((CompoundTag) Fuels.CODEC.encodeStart(NbtOps.INSTANCE, REGISTRY.getFuels()).getOrThrow(false, STDERR)).getCompound("fuels"));
@@ -112,18 +114,24 @@ public class NbtDeserializer extends AbstractDeserializer {
     }
 
     @Override
-    public void onServerStarting(MinecraftServer server) {
-        configDatPath = ((MinecraftServerAccessor) server).getSession().getWorldDirectory(server.getOverworld().getRegistryKey()).toPath();
-        LOGGER.info("Registering Nbt Deserializer!");
-        NbtCommand.register();
+    public void onServerStarted(MinecraftServer server) {
+        LOGGER.info("Deserializing Nbt and Registering");
+        File configDatFile = ((MinecraftServerAccessor) server).getSession().getWorldDirectory(World.OVERWORLD);
+        configDatPath = configDatFile.toPath().resolve("simplex-data-api-nbt.dat");
         this.deserializeQuietly();
         this.serializeQuietly();
     }
 
     @Override
     public void onServerStopping(MinecraftServer minecraftServer) {
-        LOGGER.info("Unregistering Nbt Deserializer!");
+        LOGGER.info("Serializing Nbt and Unregistering");
         this.serializeQuietly();
         REGISTRY.removeAll();
+    }
+
+    @Override
+    public void onInitialize() {
+        LOGGER.info("Registering Nbt Deserializer!");
+        NbtCommand.register();
     }
 }

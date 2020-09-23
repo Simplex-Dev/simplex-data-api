@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-public abstract class AbstractDeserializer implements ServerLifecycleEvents.ServerStarting, ServerLifecycleEvents.ServerStopping {
+public abstract class AbstractDeserializer implements ServerLifecycleEvents.ServerStarted, ServerLifecycleEvents.ServerStopping {
     public abstract void serialize() throws IOException;
 
     public void serializeQuietly() {
@@ -31,7 +31,7 @@ public abstract class AbstractDeserializer implements ServerLifecycleEvents.Serv
     }
 
     {
-        ServerLifecycleEvents.SERVER_STARTING.register(this);
+        ServerLifecycleEvents.SERVER_STARTED.register(this);
         ServerLifecycleEvents.SERVER_STOPPING.register(this);
     }
 }

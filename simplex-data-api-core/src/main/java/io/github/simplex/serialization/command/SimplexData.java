@@ -1,5 +1,7 @@
 package io.github.simplex.serialization.command;
 
+import java.util.List;
+
 import io.github.simplex.serialization.AbstractDeserializer;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -16,8 +18,10 @@ public final class SimplexData {
 
     public static void initialize() {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(CMD));
+        List<AbstractDeserializer> entrypoints = FabricLoader.getInstance().getEntrypoints("simplex-data-api", AbstractDeserializer.class);
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            FabricLoader.getInstance().getEntrypoints("simplex-data-api", AbstractDeserializer.class).forEach(d -> d.onServerStarting(server));
+            entrypoints.forEach(d -> d.onServerStarted(server));
         });
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> entrypoints.forEach(d -> d.onServerStopping(server)));
     }
 }
