@@ -7,6 +7,7 @@ plugins {
 	id 'org.ajoberstar.grgit' version '3.1.1'
 	id 'signing'
 	id 'com.jfrog.bintray' version '1.8.4'
+	id 'com.matthewprenger.cursegradle' version "1.4.0"
 }
 
 def ENV = System.getenv()
@@ -169,9 +170,9 @@ subprojects {
 		publications = ["${archivesBaseName}_mavenJava"]
 		publish = true
 		pkg {
-			repo = "Simplex-Maven"
+			repo = "simplex-maven"
 			name = archivesBaseName
-			userOrg = "simplex-dev"
+			userOrg = "simplex"
 			licenses = ["Apache-2.0"]
 			version {
 				released = new Date()
@@ -202,12 +203,12 @@ subprojects.each { bintrayUpload.dependsOn("${it.path}:bintrayUpload") }
 bintray {
 	user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
 	key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
-	publications = ["${archivesBaseName}_mavenJava"]
+	publications = ["mavenJava"]
 	publish = true
 	pkg {
-		repo = "Simplex-Maven"
+		repo = "simplex-maven"
 		name = "simplex-data-api"
-		userOrg = "simplex-dev"
+		userOrg = "simplex"
 		licenses = ["Apache-2.0"]
 		version {
 			released = new Date()
@@ -225,7 +226,7 @@ bintray {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+			artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}.jar")) {
 				builtBy remapMavenJar
 			}
 			artifact(sourcesJar) {
@@ -254,9 +255,31 @@ dependencies {
 	afterEvaluate {
 		subprojects.each {
 			implementation project(path: ":${it.name}", configuration: "dev")
-			include project("${it.name}:")
+			include project(path: ":${it.name}")
 
 			testmodImplementation project("${it.name}:").sourceSets.testmod.output
 		}
+	}
+}
+
+curseforge {
+	if (project.hasProperty('curse_api_key')) {
+		apiKey = project.getProperty('curse_api_key')
+	}
+	project {
+		id = '404325'
+		changelog = 'A changelog can be found at https://github.com/Simplex-Dev/simplex-data-api/commits/Globals.mcVersion-fabric'
+		releaseType = 'alpha'
+		addGameVersion Globals.mcVersion
+		addGameVersion 'Fabric'
+		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
+			displayName = "[$Globals.mcVersion] Simplex Data API $Globals.baseVersion"
+		}
+		afterEvaluate {
+			uploadTask.dependsOn("remapJar")
+		}
+	}
+	options {
+		forgeGradleIntegration = false
 	}
 }
