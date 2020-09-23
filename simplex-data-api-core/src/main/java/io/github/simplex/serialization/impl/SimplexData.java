@@ -1,4 +1,4 @@
-package io.github.simplex.serialization.command;
+package io.github.simplex.serialization.impl;
 
 import java.util.List;
 

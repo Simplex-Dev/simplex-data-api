@@ -16,7 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.simplex.serialization.command.SimplexData::initialize"
+      "io.github.simplex.serialization.impl.SimplexData::initialize"
     ],
     "client": [],
     "server": []

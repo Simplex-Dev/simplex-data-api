@@ -1,6 +1,6 @@
 package io.github.simplex.serialization.nbt.server;
 
-import io.github.simplex.serialization.command.SimplexData;
+import io.github.simplex.serialization.impl.SimplexData;
 import io.github.simplex.serialization.nbt.NbtDeserializer;
 import io.github.simplex.serialization.object.content.Flammables;
 import com.mojang.brigadier.arguments.FloatArgumentType;

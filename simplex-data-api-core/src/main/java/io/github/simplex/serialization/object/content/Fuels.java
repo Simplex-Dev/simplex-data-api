@@ -13,6 +13,14 @@ import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 
+/**
+ * An {@link ObjectHolder} for Fuels. A Fuel is termed
+ * as an item that can burn in a furnace for a specific time.
+ * It stores a map of {@link Item} and {@link Integer} and registers
+ * them to the fuel registry.
+ *
+ * @see FuelRegistry
+ */
 public class Fuels implements ObjectHolder {
     public static final Codec<Fuels> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.INT).optionalFieldOf("fuels", ImmutableMap.of()).forGetter(Fuels::getMap)

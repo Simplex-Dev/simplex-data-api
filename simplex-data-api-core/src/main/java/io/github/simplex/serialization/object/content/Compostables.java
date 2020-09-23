@@ -13,6 +13,9 @@ import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 
+/**
+ * An Object holder for compostable
+ */
 public class Compostables implements ObjectHolder {
     public static final Codec<Compostables> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.unboundedMap(IdentifiableCodecs.ITEM, Codec.FLOAT).optionalFieldOf("compostables", ImmutableMap.of()).forGetter(Compostables::getMap)

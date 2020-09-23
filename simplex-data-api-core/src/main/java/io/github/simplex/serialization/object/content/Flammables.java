@@ -12,6 +12,15 @@ import net.minecraft.block.Block;
 
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 
+/**
+ * An {@link ObjectHolder} for Flammables. A Flammable is termed
+ * as a block that has a burn chance and spread chance attribute.
+ * It stores a list of {@link Entry} and registers them to the
+ * flammable block registry.
+ *
+ * @see FlammableBlockRegistry
+ * @see Entry
+ */
 public class Flammables implements ObjectHolder {
     public static final Codec<Flammables> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(Entry.CODEC).optionalFieldOf("flammables", ImmutableList.of()).forGetter(Flammables::getFlammables)
@@ -34,9 +43,7 @@ public class Flammables implements ObjectHolder {
 
     @Override
     public void addAll() {
-        for (Entry entry : this.getFlammables()) {
-            FlammableBlockRegistry.getDefaultInstance().add(entry.getBlock(), entry.getBurn(), entry.getSpread());
-        }
+        this.getFlammables().forEach(entry -> FlammableBlockRegistry.getDefaultInstance().add(entry.getBlock(), entry.getBurn(), entry.getSpread()));
     }
 
     @Override
@@ -44,6 +51,9 @@ public class Flammables implements ObjectHolder {
         this.getFlammables().stream().map(Entry::getBlock).forEach(FlammableBlockRegistry.getDefaultInstance()::remove);
     }
 
+    /**
+     * Stores a block, burn chance and spread chance.
+     */
     public static class Entry {
         public static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 IdentifiableCodecs.BLOCK.fieldOf("block").forGetter(Entry::getBlock),
