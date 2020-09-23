@@ -32,6 +32,8 @@ public class NbtDeserializer extends AbstractDeserializer {
     private static NbtDeserializer instance;
     private static Path configDatPath = FabricLoader.getInstance().getConfigDir().resolve("simplex-data-api-nbt.dat");
 
+    {instance = this;}
+
     public static NbtDeserializer getInstance() {
         return instance;
     }
@@ -118,7 +120,10 @@ public class NbtDeserializer extends AbstractDeserializer {
         this.serializeQuietly();
     }
 
-    {
-        instance = this;
+    @Override
+    public void onServerStopping(MinecraftServer minecraftServer) {
+        LOGGER.info("Unregistering Nbt Deserializer!");
+        this.serializeQuietly();
+        REGISTRY.removeAll();
     }
 }
